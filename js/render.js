@@ -317,8 +317,8 @@ function stats() {
 
 function source(q, answer = false) {
   const p = answer ? (q.answerPage || q.page) : q.page;
-  return '<a class="source-link" href="de-cuong-goc.pdf#page=' + p + '" target="_blank" rel="noopener">' +
-    '<span>📄</span> <span class="hide-mobile">' + (answer ? 'Mở PDF gốc · ' : 'Đề bài gốc · ') + '</span>trang ' + p + ' ↗</a>';
+  return '<span class="source-link" style="cursor:default;">' +
+    '<span>📄</span> <span>Đề cương 54 trang · Trang ' + p + (q.sourceId ? ' · Mã câu ' + esc(q.sourceId) : '') + '</span></span>';
 }
 
 function getLevelClass(lvl) {
