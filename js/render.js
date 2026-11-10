@@ -374,10 +374,10 @@ function render() {
     if ($('#title')) $('#title').textContent = s ? s.title : 'Tất cả 6 Group (299 câu trắc nghiệm)';
     if ($('#subtitle')) {
       $('#subtitle').textContent = mode === 'essay'
-        ? 'Hệ thống hóa 10 chủ đề lý thuyết & bài tập cốt lõi kèm trang PDF đề cương gốc để đối chiếu.'
+        ? 'Hệ thống hóa 10 chủ đề lý thuyết & bài tập cốt lõi theo đề cương 54 trang.'
         : mode === 'flash'
-        ? 'Chạm trực tiếp vào thẻ hoặc nhấn Space để lật câu hỏi và ảnh chụp đáp án dấu * 3D.'
-        : 'Bấm phím A, B, C, D (hoặc 1-4) để chọn. Đáp án đúng sáng xanh, sai báo đỏ, kèm ảnh cắt đáp án dấu * từ PDF gốc.';
+        ? 'Chạm trực tiếp vào thẻ hoặc nhấn Space để lật xem đáp án đúng và giải thích 3D.'
+        : 'Bấm phím A, B, C, D (hoặc 1-4) để chọn đáp án. Đáp án đúng sáng xanh, sai báo đỏ kèm giải thích chi tiết.';
     }
   }
 
@@ -505,28 +505,11 @@ function render() {
       '</div>';
 
     if (r) {
-      const cropSrc = 'answers/q_' + q.id + '.png';
-      const fullPageSrc = 'pages/page_' + ansPage + '.png';
-
       body += '<div class="feedback-box ' + (r.correct ? 'good' : 'bad') + '" role="status">' +
         '<div class="feedback-header">' +
           '<span>' + (r.correct ? '🎉 Xuất sắc! Bạn trả lời đúng!' : '💡 Chưa chính xác! Đáp án đúng (dấu *) là: ' + q.answer) + '</span>' +
         '</div>' +
         '<div class="feedback-desc">' + esc(q.explanation) + '</div>' +
-
-        '<div class="answer-crop-card">' +
-          '<div class="answer-crop-header">' +
-            '<span>📸 Ảnh chụp đáp án dấu * gốc (Đề cương · Trang ' + ansPage + ')</span>' +
-            '<div style="display:flex;gap:6px;">' +
-              '<button type="button" class="crop-action-btn" data-zoom-img="' + cropSrc + '" data-zoom-title="Ảnh chụp đáp án Câu ' + q.id + ' (Trang ' + ansPage + ')">🔍 Phóng to</button>' +
-              '<button type="button" class="crop-action-btn" data-zoom-img="' + fullPageSrc + '" data-zoom-title="Toàn bộ Trang ' + ansPage + ' trong đề cương gốc">📖 Xem cả trang ' + ansPage + '</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="answer-crop-img-wrap" data-zoom-img="' + cropSrc + '" data-zoom-title="Ảnh chụp đáp án Câu ' + q.id + ' (Trang ' + ansPage + ')">' +
-            '<img src="' + cropSrc + '" alt="Ảnh trích đoạn đáp án Câu ' + q.id + '" class="answer-crop-img" loading="lazy">' +
-          '</div>' +
-        '</div>' +
-
         '<div class="feedback-actions">' +
           source(q, true) +
           '<button id="retry" class="btn" style="padding:7px 10px;font-size:12px;">🔄 <span class="hide-mobile">Làm lại câu này (R)</span><span class="show-mobile">Làm lại</span></button>' +
@@ -537,8 +520,6 @@ function render() {
       body += '<div style="margin-top:18px;">' + source(q) + '</div>';
     }
   } else if (mode === 'flash') {
-    const cropSrc = 'answers/q_' + q.id + '.png';
-
     let optionsHtml = '';
     if (q.options && q.options.length) {
       optionsHtml = '<div class="flash-options-grid">' +
@@ -580,7 +561,7 @@ function render() {
           '<h2 class="flash-prompt">' + esc(q.prompt) + '</h2>' +
           renderQuestionDiagrams(q) +
           optionsHtml +
-          '<div class="flash-flip-hint"><span>🔄</span> ' + (r ? 'Chạm vào thẻ hoặc nhấn Space để lật xem ảnh đáp án ↻' : 'Chọn đáp án A, B, C, D để kiểm tra & lật 3D · Hoặc bấm Space để lật ngay ↻') + '</div>' +
+          '<div class="flash-flip-hint"><span>🔄</span> ' + (r ? 'Chạm vào thẻ hoặc nhấn Space để lật xem giải thích đáp án ↻' : 'Chọn đáp án A, B, C, D để kiểm tra & lật 3D · Hoặc bấm Space để lật ngay ↻') + '</div>' +
         '</div>' +
         '<div class="flash-face flash-back">' +
           '<div class="flash-back-top-row">' +
@@ -589,17 +570,6 @@ function render() {
           '</div>' +
           '<h3 class="flash-answer-title">' + esc(q.options['ABCD'.indexOf(q.answer)]) + '</h3>' +
           '<div class="flash-answer-exp">' + esc(q.explanation) + '</div>' +
-
-          '<div class="answer-crop-card" style="width:100%;margin:12px 0;">' +
-            '<div class="answer-crop-header">' +
-              '<span>📸 Trích đoạn đề cương gốc (Trang ' + ansPage + ')</span>' +
-              '<button type="button" class="crop-action-btn" data-zoom-img="' + cropSrc + '" data-zoom-title="Ảnh đáp án Câu ' + q.id + '">🔍 Phóng to</button>' +
-            '</div>' +
-            '<div class="answer-crop-img-wrap" data-zoom-img="' + cropSrc + '" data-zoom-title="Ảnh đáp án Câu ' + q.id + '">' +
-              '<img src="' + cropSrc + '" alt="Đáp án gốc" class="answer-crop-img" loading="lazy">' +
-            '</div>' +
-          '</div>' +
-
           source(q, true) +
           '<div class="flash-back-footer-row">' +
             (r ? '<button type="button" id="flashRetryBtn" class="btn flash-retry-btn">🔄 Làm lại câu này (R)</button>' : '') +
@@ -620,7 +590,6 @@ function render() {
     const userNote = state.notes[q.id] || '';
     const wordCount = userNote.trim() ? userNote.trim().split(/\s+/).length : 0;
     const charCount = userNote.length;
-    const fullPageSrc = 'pages/page_' + ansPage + '.png';
 
     body = '<h2 class="question-prompt">' + esc(q.prompt) + '</h2>' +
       '<div class="essay-meta-row">' +
@@ -629,7 +598,7 @@ function render() {
       '</div>' +
       '<textarea id="notes" class="essay-textarea" placeholder="Gõ tóm tắt kiến thức, công thức V(G), BVA, EP hoặc phân tích của bạn…">' + esc(userNote) + '</textarea>' +
       '<div class="card-nav-row" style="margin-top:16px;">' +
-        '<button id="reveal" class="btn primary">' + (revealed ? 'Ẩn hệ thống hóa kiến thức' : '<span class="hide-mobile">👁️ Xem hệ thống hóa kiến thức &amp; trang PDF gốc</span><span class="show-mobile">👁️ Xem hệ thống hóa</span>') + '</button>' +
+        '<button id="reveal" class="btn primary">' + (revealed ? 'Ẩn hệ thống hóa kiến thức' : '<span class="hide-mobile">👁️ Xem hệ thống hóa kiến thức trọng tâm</span><span class="show-mobile">👁️ Xem hệ thống hóa</span>') + '</button>' +
         source(q) +
       '</div>';
 
@@ -639,17 +608,6 @@ function render() {
           '<span>💡</span> Hệ thống hóa kiến thức trọng tâm theo Đề cương 54 trang' +
         '</div>' +
         '<div class="essay-solution-body" style="white-space:pre-line;">' + esc(q.answer) + '</div>' +
-        '<div class="answer-crop-card" style="margin-top:14px;">' +
-          '<div class="answer-crop-header">' +
-            '<span>📸 Trang ' + ansPage + ' trong đề cương gốc (54 trang)</span>' +
-            '<div style="display:flex;gap:6px;">' +
-              '<button type="button" class="crop-action-btn" data-zoom-img="' + fullPageSrc + '" data-zoom-title="Toàn bộ Trang ' + ansPage + ' trong đề cương">🔍 Phóng to trang ' + ansPage + '</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="answer-crop-img-wrap" data-zoom-img="' + fullPageSrc + '" data-zoom-title="Toàn bộ Trang ' + ansPage + ' trong đề cương">' +
-            '<img src="' + fullPageSrc + '" alt="Trang ' + ansPage + ' đề cương gốc" class="answer-crop-img" loading="lazy">' +
-          '</div>' +
-        '</div>' +
         '<div style="margin-top:16px;">' + source(q, true) + '</div>' +
       '</div>' +
       '<div class="card-nav-row" style="margin-top:18px;">' +
