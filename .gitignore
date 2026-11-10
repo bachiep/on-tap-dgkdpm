@@ -1,0 +1,10 @@
+# Ignored files
+node_modules/
+.system_generated/
+.user_uploaded/
+test_runner.py
+audit.cjs
+*.tmp
+.DS_Store
+
+.vercel

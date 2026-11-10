@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ôn tập Đánh giá &amp; Kiểm định CLPM · Phenikaa University</title>
+  <link rel="icon" type="image/png" href="phenikaa-icon.png">
+  <link rel="apple-touch-icon" href="phenikaa-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2.3">
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+  <div id="toast" role="alert"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-wrap">
+      <button id="menuToggle" class="menu-toggle" aria-label="Mở danh sách Group">☰</button>
+      <div class="logo-badge" title="Phenikaa University · Góc ôn tập ĐG&amp;KĐCLPM">
+        <img src="phenikaa-icon.png" alt="Phenikaa University Logo" class="logo-img">
+      </div>
+      <div class="brand-text">
+        <strong>Góc ôn tập ĐG&amp;KĐCLPM</strong>
+        <div class="sub">Đánh giá &amp; Kiểm định CLPM · Đề cương 54 trang</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div id="streakBadge" class="streak-pill" title="Chuỗi trả lời đúng liên tiếp">
+        <span class="fire-icon">🔥</span>
+        <span><strong id="streakCount">0</strong> chuỗi</span>
+      </div>
+
+      <button id="soundToggle" class="icon-btn" title="Bật/Tắt âm thanh" aria-label="Âm thanh">
+        <span id="soundIcon">🔊</span>
+      </button>
+
+      <button id="themeToggle" class="icon-btn" title="Chuyển chế độ Sáng/Tối" aria-label="Chế độ hiển thị">
+        <span id="themeIcon">🌙</span>
+      </button>
+
+      <button id="headerSyncBtn" class="sync-header-btn" onclick="openSyncModal()" title="Đồng bộ tiến độ Máy tính ⇆ Điện thoại">
+        <span>📲</span> <span class="hide-mobile">Đồng bộ</span>
+      </button>
+
+      <button id="headerExam50Btn" class="random-header-btn" style="background:linear-gradient(135deg,#0d9488,#10b981);box-shadow:0 3px 12px rgba(16,185,129,0.35);" title="Luyện đề thi chuẩn 50 câu theo ma trận CĐR (10/15/3/5/12/5)">
+        <span>🎯</span> <span class="hide-mobile">Thi thử 50 câu</span>
+      </button>
+
+      <button id="headerRandom30Btn" class="random-header-btn" title="Luyện phản xạ: Bốc ngẫu nhiên 30 câu trắc nghiệm từ 299 câu">
+        <span>🎲</span> <span class="hide-mobile">Random 30 câu</span>
+      </button>
+
+      <button id="headerFormulaBtn" class="formula-header-btn" title="Mở sổ tay công thức V(G), BVA, Độ phủ &amp; Máy tính kiểm thử">
+        <span>📐</span> <span class="hide-mobile">Công thức cần nhớ</span>
+      </button>
+      <span class="badge-pill">✓ 299 trắc nghiệm · 6 Group</span>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Backdrop -->
+  <div id="drawerBackdrop" class="drawer-backdrop"></div>
+
+  <!-- Main Layout -->
+  <div id="layoutContainer" class="layout">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <span class="eyebrow">Cấu trúc 6 Group &amp; Bộ đề</span>
+        <button id="sidebarCollapseBtn" class="collapse-btn" title="Thu gọn/Mở rộng sidebar">◀</button>
+        <button id="closeDrawer" class="icon-btn close-drawer-btn" aria-label="Đóng menu">✕</button>
+      </div>
+      <nav id="sessions" class="nav" aria-label="Chọn Group học tập"></nav>
+      
+      <div class="sidebar-sync-box">
+        <button class="sidebar-sync-btn" onclick="openSyncModal()" title="Đồng bộ tiến độ sang điện thoại">
+          <span>📲</span> <span>Đồng bộ Máy ⇆ Điện thoại</span>
+        </button>
+      </div>
+
+      <div class="side-tip-card">
+        <strong>💡 Phím tắt nhanh</strong>
+        <p style="margin:0;line-height:1.5;">Bấm phím <b>A B C D</b> (hoặc 1 2 3 4) để chọn đáp án, bấm <b>← →</b> để chuyển câu. Khi chuyển câu trang sẽ tự cuộn đúng vị trí câu hỏi!</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div id="storageNotice" class="feedback-box bad hidden" style="margin-bottom:16px;">
+        <strong>⚠️ Lưu ý lưu trữ:</strong> Trình duyệt không cho phép lưu dữ liệu (localStorage). Bạn vẫn có thể học, nhưng kết quả sẽ mất khi đóng tab.
+      </div>
+
+      <!-- Quick Session Selector Pill for Mobile -->
+      <div class="mobile-session-bar">
+        <button id="mobileSessionBtn" class="session-badge-btn">
+          <span id="mobileSessionText">📍 Tất cả 6 Group (299 câu)</span>
+          <span>▾</span>
+        </button>
+      </div>
+
+      <!-- Intro -->
+      <div class="intro">
+        <div class="intro-badge">Ôn tập thông minh · Đối chiếu ảnh gốc dấu * tức thì</div>
+        <h1 id="title" class="page-title">Tất cả 6 Group (299 câu)</h1>
+        <p id="subtitle" class="subtitle">Chọn đáp án, xem giải thích chi tiết &amp; ảnh chụp đáp án dấu * gốc từ đề cương 54 trang.</p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Số câu</span>
+            <span class="stat-icon">📚</span>
+          </div>
+          <b id="total" class="stat-val">299</b>
+          <span class="stat-sub">Đang hiển thị</span>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Đã làm</span>
+            <span class="stat-icon">🎯</span>
+          </div>
+          <b id="done" class="stat-val">0</b>
+          <span id="donePercent" class="stat-sub">0% tiến độ</span>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Chính xác</span>
+            <span class="stat-icon">⚡</span>
+          </div>
+          <b id="accuracy" class="stat-val">—</b>
+          <span id="accDetail" class="stat-sub">Dựa trên câu đã làm</span>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Kỷ lục</span>
+            <span class="stat-icon">🔥</span>
+          </div>
+          <b id="maxStreakVal" class="stat-val">0</b>
+          <span class="stat-sub">Chuỗi đúng cao nhất</span>
+        </div>
+      </div>
+
+      <!-- Mode Switcher Tabs -->
+      <div class="mode-tabs-wrap">
+        <div class="tabs-segmented" role="tablist" aria-label="Chế độ ôn tập">
+          <button class="tab-btn" data-mode="quiz" role="tab" aria-selected="true">
+            <span>⚡</span> Trắc nghiệm
+          </button>
+          <button class="tab-btn" data-mode="flash" role="tab" aria-selected="false">
+            <span>🎴</span> Flashcard<span class="hide-mobile"> 3D</span>
+          </button>
+          <button class="tab-btn" data-mode="essay" role="tab" aria-selected="false">
+            <span>✍️</span> Tổng hợp<span class="hide-mobile"> lý thuyết</span>
+          </button>
+          <button class="tab-btn" data-mode="formula" role="tab" aria-selected="false">
+            <span>📐</span> Công thức<span class="hide-mobile"> cần nhớ</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar-wrap">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input id="search" class="search-input" type="search" placeholder="Tìm câu hỏi, mã câu (VD: 007, 104, McCabe, BVA)…" aria-label="Tìm kiếm câu hỏi">
+        </div>
+
+        <select id="filter" class="filter-select" aria-label="Bộ lọc câu hỏi">
+          <option value="all">📋 Tất cả câu hỏi</option>
+          <option value="wrong">❌ Sai / Cần ôn lại</option>
+          <option value="unseen">⏳ Chưa học</option>
+          <option value="star">⭐ Đã đánh dấu</option>
+        </select>
+
+        <button id="exam50Btn" class="btn" title="Thi thử 50 câu theo đúng cấu trúc đề thật (10/15/3/5/12/5)">
+          <span>🎯</span> <span class="hide-mobile">Đề chuẩn 50 câu</span><span class="show-mobile">50 câu</span>
+        </button>
+
+        <button id="random30Btn" class="btn" title="Bốc ngẫu nhiên 30 câu trắc nghiệm từ 299 câu để luyện phản xạ">
+          <span>🎲</span> <span class="hide-mobile">Random 30 câu</span><span class="show-mobile">30 câu</span>
+        </button>
+
+        <button id="shuffle" class="btn">
+          <span>⇄</span> <span class="hide-mobile">Trộn câu</span><span class="show-mobile">Trộn</span>
+        </button>
+
+        <!-- Dropdown Làm lại phần này hoặc tất cả -->
+        <div class="reset-dropdown-wrap">
+          <button id="resetMenuBtn" class="btn" title="Làm lại bài: Từng phần hoặc tất cả">
+            <span>🔄</span> <span class="hide-mobile">Làm lại</span><span class="show-mobile">Lại</span> <span style="font-size:10px;">▾</span>
+          </button>
+          <div id="resetDropdown" class="reset-dropdown-menu hidden">
+            <button id="resetSectionBtn" class="reset-dropdown-item" type="button">
+              <span class="reset-item-icon">🔄</span>
+              <div class="reset-item-text">
+                <strong id="resetSectionLabel">Làm lại phần này</strong>
+                <small id="resetSectionSub">Xóa đáp án phần hiện tại để làm lại</small>
+              </div>
+            </button>
+            <div class="reset-dropdown-divider"></div>
+            <button id="resetAllBtn" class="reset-dropdown-item danger" type="button">
+              <span class="reset-item-icon">🗑️</span>
+              <div class="reset-item-text">
+                <strong>Làm lại tất cả (6 Group · 299 câu)</strong>
+                <small>Xóa sạch toàn bộ kết quả để ôn lại từ đầu</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <button id="openMatrixBtn" class="btn" title="Mở bảng lưới toàn bộ câu hỏi">
+          <span>🗂️</span> <span class="hide-mobile">Lưới câu</span><span class="show-mobile">Lưới</span>
+        </button>
+      </div>
+
+      <!-- Main Study Card (Anchor target for auto-scroll) -->
+      <div id="card" class="quiz-card"></div>
+
+      <!-- Progress Track -->
+      <div class="prog-bar-container">
+        <div id="bar" class="prog-bar-fill" style="width:0%;"></div>
+      </div>
+
+      <!-- Desktop Bottom Navigation -->
+      <div id="navigation" class="card-nav-row">
+        <button id="prev" class="btn">
+          <span>←</span> Câu trước
+        </button>
+        <span id="position" class="pos-indicator">1 / 299</span>
+        <button id="next" class="btn primary">
+          Câu tiếp <span>→</span>
+        </button>
+      </div>
+
+      <!-- Quick Jump Strip (Desktop & Tablet) -->
+      <div class="jump-strip-wrap">
+        <div class="jump-strip-header">
+          <span class="eyebrow">Chuyển nhanh câu hỏi</span>
+          <button id="viewAllMatrix" class="btn" style="padding:4px 10px;font-size:12px;">Xem dạng lưới ↗</button>
+        </div>
+        <div id="jump" class="jump-grid" aria-label="Danh sách câu"></div>
+      </div>
+
+      <!-- Keyboard Shortcuts Guide -->
+      <div class="keyboard-hint">
+        <span><kbd class="kbd-badge">A B C D</kbd> hoặc <kbd class="kbd-badge">1–4</kbd> Chọn đáp án</span>
+        <span><kbd class="kbd-badge">←</kbd> <kbd class="kbd-badge">→</kbd> Chuyển câu</span>
+        <span><kbd class="kbd-badge">Enter</kbd> Câu tiếp theo</span>
+        <span><kbd class="kbd-badge">Space</kbd> Lật flashcard</span>
+        <span><kbd class="kbd-badge">S</kbd> Đánh dấu</span>
+        <span><kbd class="kbd-badge">R</kbd> Làm lại</span>
+      </div>
+
+      <!-- Footer -->
+      <footer>
+        <p><strong>Nguồn học liệu:</strong> Đề cương học phần Đánh giá và Kiểm định chất lượng phần mềm (54 trang), kiểm tra và đối chiếu toàn diện 299 câu trắc nghiệm (6 Group chuẩn CĐR) + 15 sơ đồ CFG/DFG/Code.</p>
+        <p>
+          <a href="de-cuong-goc.pdf" target="_blank" rel="noopener">📄 Mở file PDF đề cương gốc (54 trang) ↗</a> · 
+          <a href="kiem-tra-du-lieu.json" target="_blank">🔍 Biên bản đối chiếu dữ liệu</a>
+        </p>
+
+        <details class="settings-box">
+          <summary>⚙️ Quản lý dữ liệu học tập</summary>
+          <p style="margin:10px 0 12px;font-size:12px;color:var(--muted);">
+            Tiến độ được lưu an toàn trên trình duyệt của máy tính/điện thoại này. Bạn có thể làm lại từng phần hoặc đặt lại toàn bộ khi muốn ôn tập lại từ đầu.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button id="footerResetSection" class="btn" type="button">🔄 Làm lại phần đang học</button>
+            <button id="reset" class="btn" style="color:var(--red);" type="button">🗑️ Xóa toàn bộ &amp; làm lại từ đầu</button>
+          </div>
+        </details>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Mobile Sticky Bottom Action Bar -->
+  <div class="mobile-bottom-bar">
+    <button id="mobilePrev" class="btn">← Trước</button>
+    <button id="mobileMatrixBtn" class="btn">
+      <span id="mobilePos">1 / 299 ▾</span>
+    </button>
+    <button id="mobileNext" class="btn primary">Tiếp →</button>
+  </div>
+
+  <!-- Full Question Matrix Modal -->
+  <div id="matrixModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="matrixTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="matrixTitle" class="modal-title">🗂️ Lưới câu hỏi trong bộ lọc</h3>
+        <button id="closeMatrixBtn" class="icon-btn" aria-label="Đóng lưới">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="matrix-legend">
+          <span><span class="matrix-legend-dot" style="background:var(--green)"></span> Đã làm đúng</span>
+          <span><span class="matrix-legend-dot" style="background:var(--red)"></span> Làm sai / Chưa nhớ</span>
+          <span><span class="matrix-legend-dot" style="background:var(--surface);border:1.5px solid var(--border)"></span> Chưa làm</span>
+          <span><span class="matrix-legend-dot" style="background:var(--amber)"></span> ★ Đã lưu</span>
+          <span><span class="matrix-legend-dot" style="background:var(--purple)"></span> Đang xem</span>
+        </div>
+        <div id="matrixGrid" class="matrix-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Lightbox Modal -->
+  <div id="imageLightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+    <div class="lightbox-toolbar">
+      <span id="lightboxTitle" class="lightbox-caption">Ảnh đối chiếu đề cương gốc</span>
+      <div class="lightbox-btn-group">
+        <button id="zoomOutBtn" class="lightbox-btn" title="Thu nhỏ">－</button>
+        <button id="zoomResetBtn" class="lightbox-btn zoom-reset" title="Đặt lại kích thước">100%</button>
+        <button id="zoomInBtn" class="lightbox-btn" title="Phóng to">＋</button>
+        <button id="closeLightbox" class="lightbox-btn close-btn" title="Đóng (Esc)">✕</button>
+      </div>
+    </div>
+    <div class="lightbox-body" id="lightboxBody">
+      <img id="lightboxImg" src="" alt="Ảnh đáp án gốc" class="lightbox-img">
+    </div>
+  </div>
+
+  <!-- Sync & Backup Modal (QR Code & File Import/Export) -->
+  <div id="syncModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="syncModalTitle" onclick="handleSyncOverlayClick(event)">
+    <div class="sync-modal-dialog">
+      <div class="sync-modal-header">
+        <div class="sync-modal-title-wrap">
+          <div class="sync-modal-badge">⚡ TIỆN ÍCH ĐỒNG BỘ 2 CHIỀU</div>
+          <h3 id="syncModalTitle" class="sync-modal-title">📲 Đồng bộ tiến độ Máy tính ⇆ Điện thoại</h3>
+          <p class="sync-modal-sub">Hoàn toàn không cần đăng nhập · Quét mã QR 1 chạm hoặc sao lưu file</p>
+        </div>
+        <button class="f3d-close-btn" onclick="closeSyncModal()" title="Đóng (Esc)">✕</button>
+      </div>
+
+      <!-- Live Progress Summary -->
+      <div class="sync-summary-banner">
+        <div class="sync-summary-item"><span class="ss-lbl">Trắc nghiệm</span><span class="ss-val" id="syncStatQuiz">0/299</span></div>
+        <div class="sync-summary-item"><span class="ss-lbl">Flashcard 3D</span><span class="ss-val" id="syncStatFlash">0/299</span></div>
+        <div class="sync-summary-item"><span class="ss-lbl">Công thức</span><span class="ss-val" id="syncStatFormula">0/15</span></div>
+        <div class="sync-summary-item"><span class="ss-lbl">Đã lưu ⭐</span><span class="ss-val" id="syncStatStar">0 câu</span></div>
+        <div class="sync-summary-item"><span class="ss-lbl">Kỷ lục chuỗi</span><span class="ss-val" id="syncStatStreak" style="color:#f59e0b;">0 🔥</span></div>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <div class="sync-tabs-row">
+        <button id="syncTabBtnQr" class="sync-tab-btn active" onclick="switchSyncTab('qr')">
+          <span>📱</span> <span>Quét mã QR 1 chạm</span>
+        </button>
+        <button id="syncTabBtnFile" class="sync-tab-btn" onclick="switchSyncTab('file')">
+          <span>📁</span> <span>File sao lưu (.json)</span>
+        </button>
+        <button id="syncTabBtnCode" class="sync-tab-btn" onclick="switchSyncTab('code')">
+          <span>📋</span> <span>Mã rút gọn</span>
+        </button>
+      </div>
+
+      <div class="sync-modal-body">
+        <!-- TAB 1: QR CODE SYNC -->
+        <div id="syncTabQr" class="sync-tab-panel active">
+          <div class="sync-qr-card">
+            <div class="sync-qr-frame">
+              <canvas id="syncQrCanvas" width="280" height="280"></canvas>
+              <div class="sync-qr-expiry" id="syncQrExpiry">
+                <span class="expiry-clock-icon">🕒</span> <span>Hết hạn: <strong id="syncExpiryDate">12/11/2026</strong></span>
+              </div>
+            </div>
+            <div class="sync-qr-guide">
+              <div class="guide-step">
+                <span class="step-num">1</span>
+                <span>Mở <b>Camera</b> điện thoại hoặc tính năng <b>Quét mã Zalo</b></span>
+              </div>
+              <div class="guide-step">
+                <span class="step-num">2</span>
+                <span>Hướng camera vào mã QR sắc nét bên cạnh</span>
+              </div>
+              <div class="guide-step">
+                <span class="step-num">3</span>
+                <span>Chạm mở link: Tiến độ sẽ <b>tự động lưu vào điện thoại</b> ngay!</span>
+              </div>
+              <div class="sync-qr-actions">
+                <button class="btn primary" onclick="copySyncUrl()" title="Sao chép đường dẫn rút gọn để gửi qua Zalo/Messenger">
+                  <span>📋</span> <span>Sao chép link</span>
+                </button>
+                <button class="btn" onclick="downloadQrImage()" title="Tải file ảnh mã QR về máy hoặc điện thoại">
+                  <span>📥</span> <span>Tải ảnh QR</span>
+                </button>
+                <button class="btn" onclick="document.getElementById('qrImageFileInput').click()" title="Tải ảnh QR có sẵn trong máy để nạp tiến độ">
+                  <span>📤</span> <span>Tải lên ảnh QR</span>
+                </button>
+                <button class="btn" onclick="refreshSyncQr()" title="Tạo lại mã với dữ liệu mới nhất">
+                  <span>🔄</span> <span>Làm mới</span>
+                </button>
+              </div>
+              <input type="file" id="qrImageFileInput" accept="image/*" style="display:none;" onchange="handleQrImageUpload(event)">
+              <p class="sync-qr-hint">⚡ Mã QR độ nét cao 1 chạm · Link rút gọn siêu ngắn dễ gửi Zalo/Messenger</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: FILE JSON IMPORT / EXPORT -->
+        <div id="syncTabFile" class="sync-tab-panel">
+          <div class="sync-file-card">
+            <div class="sync-file-section">
+              <div class="sync-file-icon">📥</div>
+              <div class="sync-file-info">
+                <strong>Xuất tiến độ ra file (.json)</strong>
+                <p>Tải toàn bộ câu đã làm, ghi chú và chuỗi streak về máy tính hoặc gửi qua Zalo.</p>
+              </div>
+              <button class="btn primary" onclick="exportBackupFile()">
+                <span>📥</span> <span>Tải file sao lưu</span>
+              </button>
+            </div>
+
+            <div class="sync-divider"></div>
+
+            <div class="sync-file-section">
+              <div class="sync-file-icon">📤</div>
+              <div class="sync-file-info">
+                <strong>Khôi phục tiến độ từ file (.json)</strong>
+                <p>Chọn file <code>dgkdpm_tiendo.json</code> đã lưu trước đó để nạp lại vào trình duyệt này.</p>
+              </div>
+              <input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="handleImportFile(event)">
+              <button class="btn" onclick="document.getElementById('importFileInput').click()">
+                <span>📤</span> <span>Chọn file khôi phục</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: CODE STRING COPY / PASTE -->
+        <div id="syncTabCode" class="sync-tab-panel">
+          <div class="sync-code-card">
+            <div class="sync-code-section">
+              <div class="sync-code-section-header">
+                <span class="sync-section-badge">MÃ CỦA BẠN</span>
+                <span class="sync-section-hint">Dùng để nạp vào điện thoại / máy khác</span>
+              </div>
+              <div class="sync-code-display-wrap">
+                <input type="text" id="syncExportText" class="sync-code-token" readonly value="Đang tạo..." onclick="this.select()" title="Bấm để chọn toàn bộ mã">
+                <div class="sync-code-actions">
+                  <button class="btn sync-btn-copy primary" onclick="copySyncCode()" title="Sao chép mã rút gọn">
+                    <span>📋</span> <span>Sao chép mã</span>
+                  </button>
+                  <button class="btn sync-btn-link" onclick="copySyncUrl()" title="Sao chép link rút gọn đầy đủ">
+                    <span>🔗</span> <span>Sao chép link</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="sync-code-divider">
+              <span>HOẶC</span>
+            </div>
+
+            <div class="sync-code-section">
+              <div class="sync-code-section-header">
+                <span class="sync-section-badge input-badge">NHẬP MÃ ĐỒNG BỘ</span>
+                <span class="sync-section-hint">Dán mã rút gọn hoặc link đồng bộ</span>
+              </div>
+              <div class="sync-input-group">
+                <div class="sync-input-row">
+                  <input type="text" id="syncImportText" class="sync-import-input" placeholder="Nhập mã (VD: 3NqbgY) hoặc dán link..." autocomplete="off" onkeydown="if(event.key==='Enter') applySyncCode()">
+                  <button class="btn sync-btn-paste" type="button" onclick="pasteToSyncInput()" title="Dán nhanh từ bộ nhớ tạm">
+                    <span>📋</span> <span>Dán</span>
+                  </button>
+                </div>
+                <button class="btn primary sync-btn-apply" onclick="applySyncCode()">
+                  <span>⚡</span> <span>Áp dụng mã</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formula 3D Flashcard Modal (Wayground / Quizizz Style) -->
+  <div id="formulaModal" class="formula-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="formulaModalTitle" onclick="handleFormulaOverlayClick(event)">
+    <div class="formula-modal-dialog">
+      <div id="formulaModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Modular Scripts -->
+  <script src="qrcode.min.js?v=2.3"></script>
+  <script src="jsqr.min.js?v=2.3"></script>
+  <script src="data.js?v=2.3"></script>
+  <script src="formulas.js?v=2.3"></script>
+  <script src="js/core.js?v=2.3"></script>
+  <script src="js/render.js?v=2.3"></script>
+  <script src="js/sync.js?v=2.3"></script>
+</body>
+</html>
