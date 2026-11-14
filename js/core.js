@@ -349,3 +349,111 @@ function base() {
   }
   return (mode === 'essay' ? D.essay : D.quiz).filter(q => session === 'all' || String(q.session) === session);
 }
+
+// ========================================================
+// SECURITY PASS GATE: "Pác Hịp có đzai không?" & PASS "pachipdzai"
+// ========================================================
+const RICK_ROLL_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDEMt6MUSQI0t_Ts2EDUDWGRhQ&start_radio=1';
+const GATE_KEY = 'hiep_pass_unlocked';
+const CORRECT_PASS = 'pachipdzai';
+
+function isGateUnlocked() {
+  return sessionStorage.getItem(GATE_KEY) === 'true';
+}
+
+function handleGateAnswer(isYes) {
+  if (isYes) {
+    // Show password step
+    const step1 = document.getElementById('gateStepQuestion');
+    const step2 = document.getElementById('gateStepPassword');
+    const err = document.getElementById('gatePassError');
+    const input = document.getElementById('gatePassInput');
+    if (step1) step1.style.display = 'none';
+    if (step2) step2.style.display = 'block';
+    if (err) err.style.display = 'none';
+    if (input) {
+      input.value = '';
+      input.classList.remove('shake-error');
+      setTimeout(() => input.focus(), 150);
+    }
+  } else {
+    try { playSound('wrong'); } catch (e) {}
+    // Rick roll redirect
+    window.location.href = RICK_ROLL_URL;
+  }
+}
+
+function submitGatePassword() {
+  const input = document.getElementById('gatePassInput');
+  const err = document.getElementById('gatePassError');
+  const val = (input ? input.value : '').trim();
+
+  if (val === CORRECT_PASS) {
+    sessionStorage.setItem(GATE_KEY, 'true');
+    const modal = document.getElementById('passGateModal');
+    if (modal) {
+      modal.classList.add('unlocked');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 350);
+    }
+    document.documentElement.classList.add('gate-passed');
+    try { playSound('victory'); } catch (e) {}
+    try { fireConfetti(); } catch (e) {}
+    try { showToast('😎 Xác thực thành công! Chúc bạn ôn thi đạt điểm A+!'); } catch (e) {}
+  } else {
+    try { playSound('wrong'); } catch (e) {}
+    if (err) err.style.display = 'block';
+    if (input) {
+      input.classList.remove('shake-error');
+      void input.offsetWidth; // trigger reflow
+      input.classList.add('shake-error');
+      input.focus();
+    }
+  }
+}
+
+function backToGateQuestion() {
+  const step1 = document.getElementById('gateStepQuestion');
+  const step2 = document.getElementById('gateStepPassword');
+  const err = document.getElementById('gatePassError');
+  if (step2) step2.style.display = 'none';
+  if (step1) step1.style.display = 'block';
+  if (err) err.style.display = 'none';
+}
+
+function togglePassVisibility() {
+  const input = document.getElementById('gatePassInput');
+  if (input) {
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+}
+
+function handlePassInputKeyDown(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    submitGatePassword();
+  }
+}
+
+function lockGate() {
+  sessionStorage.removeItem(GATE_KEY);
+  document.documentElement.classList.remove('gate-passed');
+  backToGateQuestion();
+  const modal = document.getElementById('passGateModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.remove('unlocked');
+  }
+  try { showToast('🔒 Đã khóa cổng ôn tập!'); } catch (e) {}
+}
+
+window.isGateUnlocked = isGateUnlocked;
+window.handleGateAnswer = handleGateAnswer;
+window.submitGatePassword = submitGatePassword;
+window.backToGateQuestion = backToGateQuestion;
+window.togglePassVisibility = togglePassVisibility;
+window.handlePassInputKeyDown = handlePassInputKeyDown;
+window.lockGate = lockGate;
+
+

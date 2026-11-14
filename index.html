@@ -9,11 +9,63 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=2.4">
+  <link rel="stylesheet" href="style.css?v=2.5">
+  <script>
+    if (sessionStorage.getItem('hiep_pass_unlocked') === 'true') {
+      document.documentElement.classList.add('gate-passed');
+    }
+  </script>
 </head>
 <body>
   <canvas id="confettiCanvas"></canvas>
   <div id="toast" role="alert"></div>
+
+  <!-- Security Pass Gate Modal ("Pác Hịp có đzai không?") -->
+  <div id="passGateModal" class="gate-overlay">
+    <div class="gate-card">
+      <div class="gate-avatar-wrap">
+        <div class="gate-avatar">😎</div>
+      </div>
+      <div class="gate-badge">CỔNG XÁC THỰC BẢO VỆ</div>
+      
+      <!-- Step 1: Question -->
+      <div id="gateStepQuestion">
+        <h2 class="gate-title">Pác Hịp có đzai không?</h2>
+        <p class="gate-subtitle">Vui lòng xác nhận sự thật để mở khóa ngân hàng 299 câu hỏi trắc nghiệm ĐG&amp;KĐCLPM</p>
+        
+        <div class="gate-btn-group">
+          <button id="gateBtnYes" class="gate-btn gate-btn-yes" onclick="handleGateAnswer(true)">
+            <span>✅ Có</span>
+          </button>
+          <button id="gateBtnNo" class="gate-btn gate-btn-no" onclick="handleGateAnswer(false)">
+            <span>❌ Không</span>
+          </button>
+        </div>
+        <div class="gate-note">⚠️ Cảnh báo: Chọn "Không" sẽ nhận ngay vé mời xem siêu phẩm âm nhạc thế kỷ 🎵</div>
+      </div>
+
+      <!-- Step 2: Password Input (Hidden ****) -->
+      <div id="gateStepPassword" style="display: none;">
+        <h2 class="gate-title">Nhập mật khẩu truy cập</h2>
+        <p class="gate-subtitle">Nhập mật mã xác thực để vào hệ thống ôn tập:</p>
+        
+        <div class="gate-input-wrap">
+          <input type="password" id="gatePassInput" class="gate-input" placeholder="Nhập mật khẩu (****)" autocomplete="off" onkeydown="handlePassInputKeyDown(event)">
+          <button type="button" class="gate-toggle-pwd" onclick="togglePassVisibility()" title="Ẩn/Hiện mật khẩu">👁️</button>
+        </div>
+        <div id="gatePassError" class="gate-error-msg" style="display: none;">Mật khẩu không đúng! Vui lòng thử lại.</div>
+
+        <div class="gate-btn-group" style="margin-top: 18px;">
+          <button type="button" class="gate-btn gate-btn-secondary" onclick="backToGateQuestion()">
+            <span>← Quay lại</span>
+          </button>
+          <button type="button" id="gateBtnSubmitPass" class="gate-btn gate-btn-yes" onclick="submitGatePassword()">
+            <span>Mở khóa 🔓</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Header -->
   <header>
@@ -40,6 +92,10 @@
 
       <button id="themeToggle" class="icon-btn" title="Chuyển chế độ Sáng/Tối" aria-label="Chế độ hiển thị">
         <span id="themeIcon">🌙</span>
+      </button>
+
+      <button id="lockGateBtn" class="icon-btn" title="Khóa bảo vệ (Thử lại câu hỏi)" aria-label="Khóa bảo vệ" onclick="lockGate()">
+        <span>🔒</span>
       </button>
 
       <button id="headerSyncBtn" class="sync-header-btn" onclick="openSyncModal()" title="Đồng bộ tiến độ Máy tính ⇆ Điện thoại">
@@ -488,12 +544,12 @@
   </div>
 
   <!-- Modular Scripts -->
-  <script src="qrcode.min.js?v=2.4"></script>
-  <script src="jsqr.min.js?v=2.4"></script>
-  <script src="data.js?v=2.4"></script>
-  <script src="formulas.js?v=2.4"></script>
-  <script src="js/core.js?v=2.4"></script>
-  <script src="js/render.js?v=2.4"></script>
-  <script src="js/sync.js?v=2.4"></script>
+  <script src="qrcode.min.js?v=2.5"></script>
+  <script src="jsqr.min.js?v=2.5"></script>
+  <script src="data.js?v=2.5"></script>
+  <script src="formulas.js?v=2.5"></script>
+  <script src="js/core.js?v=2.5"></script>
+  <script src="js/render.js?v=2.5"></script>
+  <script src="js/sync.js?v=2.5"></script>
 </body>
 </html>

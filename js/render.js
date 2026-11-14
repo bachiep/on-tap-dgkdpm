@@ -1052,6 +1052,16 @@ if ($('#reset')) $('#reset').onclick = resetAllProgress;
 
 // Global Keyboard Shortcuts
 document.addEventListener('keydown', e => {
+  if (typeof isGateUnlocked === 'function' && !isGateUnlocked()) {
+    // When security pass gate is active, ignore quiz keys
+    if (e.key === '1' || e.key === 'y' || e.key === 'Y') {
+      handleGateAnswer(true);
+    } else if (e.key === '2' || e.key === 'n' || e.key === 'N') {
+      handleGateAnswer(false);
+    }
+    return;
+  }
+
   if (e.key === 'Escape') {
     if ($('#syncModal') && $('#syncModal').classList.contains('open')) {
       if (typeof closeSyncModal === 'function') closeSyncModal();
